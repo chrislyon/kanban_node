@@ -1,0 +1,17 @@
+{
+  "name": "app2",
+  "version": "1.0.0",
+  "description": "Test Konva",
+  "main": "index.js",
+  "dependencies": {
+  	"konva":"*",
+	"express": "*",
+	"jade": "*",
+	"jade-bootstrap": "*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "chris",
+  "license": "ISC"
+}

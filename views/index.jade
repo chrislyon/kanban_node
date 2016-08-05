@@ -1,0 +1,18 @@
+extends ../node_modules/jade-bootstrap/_bootstrap
+
+block body
+	+navbar("NJB Test Site","navbar","inverse")
+		+nav_item( "/", "active" ) Home
+		+nav_item( "tkonva1" ) Test Konva1
+		+nav_item( "tkonva2" ) Test Konva2
+		+nav_item( "tkonva3" ) Test Konva3
+		+nav_item( "tc1" ) Test Chris 1
+
+	.container
+		h1 Bootstrap starter template
+		p.lead
+			| Ce site est un essai avec Node / Jade et Bootstrap
+			br
+			| Et me permet de tester facilement les mises en page 
+			br
+			| Par contre ce genre de site se ressemblent tous

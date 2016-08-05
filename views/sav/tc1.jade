@@ -1,0 +1,96 @@
+html
+	head 
+		script(src='https://cdn.rawgit.com/konvajs/konva/1.0.0/konva.min.js').
+		style.
+			body {
+			  margin: 0;
+			  padding: 0;
+			  overflow: hidden;
+			  background-color: #F7F8E0;
+			}
+			#entete {
+			  background-color: #F3E2A9;
+			  min-height: 40px;
+			}
+	body
+		//Test KONVA CHRIS
+		#entete
+			p 
+				Center Titre de la page
+		#container
+		script.
+			var width = window.innerWidth;
+			var height = window.innerHeight;
+			
+			var stage = new Konva.Stage({
+			  container: 'container',
+			  width: width,
+			  height: height
+			});
+
+			var layer = new Konva.Layer();
+
+			// My Object
+			var Step1 = new Konva.Group({
+				x: 400,
+				y: 0,
+				draggable: false
+			});
+
+			Step1.add( new Konva.Rect({
+				x: 0,
+				y: 0,
+				width: 100,
+				height: 500,
+				fill: 'yellow',
+				stroke: 'black'
+			}) );
+
+			/** 
+			// Objet 
+			var yellowGroup = new Konva.Group({
+				x: 100,
+				y: 100,
+				draggable: true
+			});
+			var blueGroup = new Konva.Group({
+				x: 300,
+				y: 80,
+				draggable: true
+			});
+
+			var box = new Konva.Rect({
+				x: 10,
+				y: 20,
+				width: 100,
+				height: 50,
+				fill: 'red',
+				stroke: 'black'
+			});
+
+			var yellowCircle = new Konva.Circle({
+				x: 0,
+				y: 0,
+				radius: 50,
+				fill: 'yellow',
+				stroke: 'black'
+			});
+
+			var blueCircle = new Konva.Circle({
+				x: 0,
+				y: 0,
+				radius: 50,
+				fill: 'blue',
+				stroke: 'black'
+			});
+			**/
+
+			// build node tree
+			//yellowGroup.add(yellowCircle);
+			//yellowGroup.add(box);
+			//blueGroup.add(blueCircle);
+			layer.add(Step1);
+			//layer.add(yellowGroup);
+			//layer.add(blueGroup);
+			stage.add(layer);
+
