@@ -19,12 +19,87 @@ html
 			p 
 				Center 
 					h2 KANBAN BOARD
+					button( type="submit" onclick="AddTaskToBoard();" ) NEW
 		#container
 		script.
 			// Fonctions
 			function writeMessage(message) {
 				text.setText(message);
 				layer.draw();
+			}
+
+			function AddTaskToBoard(){
+				layer.add(newTask());
+				layer.draw();
+			}
+
+			// Creation d'une tache
+			function newTask() {
+				// Task
+				var t1 = new Konva.Group({
+					x: 5,
+					y: 45,
+					draggable: true,
+					id: 't1',
+					name: 'Task1'
+				});
+
+				t1.add( new Konva.Rect({
+					x: 0,
+					y: 0,
+					width: step_larg-10,
+					height: 100,
+					fill: 'yellow',
+					stroke: 'black',
+					cornerRadius: 10
+				}) );
+
+				t1.add( new Konva.Text({
+					x: 5,
+					y: 5,
+					text: 'Task 1',
+					fontSize: 20,
+					fontFamily: 'Calibri',
+					fill: 'black'
+				}) );
+
+				t1.on('dragmove', function() {
+					document.body.style.cursor = 'pointer';
+					});
+
+				t1.on('mouseout', function() {
+					document.body.style.cursor = 'default';
+					});
+
+				t1.on('click', function() {
+					writeMessage("  CLICK  ");
+				});
+
+
+				t1.on('dragstart', function() {
+					this.moveToTop();
+					writeMessage("  DRAGSTART  ");
+					});
+
+				t1.on('dragend', function(e) {
+					p_x = t1.getX() + (step_larg / 2);
+					p_y = t1.getY();
+
+					p_x = Math.floor(p_x/300) * 300;
+
+					if ( p_x < 0 )
+					{
+						p_x = 0;
+					}
+
+					t1.position({
+						x: p_x + 5,
+						y: p_y
+					});
+					writeMessage("  DRAGEND " +e.target.id()+"/"+ e.target.name() + ":" + t1.getX() + "/" + t1.getY()  );
+					});
+
+				return t1;
 			}
 
 			// MAIN CODE
@@ -52,6 +127,7 @@ html
 				Step1 = new Konva.Group({
 					x: i * step_larg ,
 					y: 0,
+					id: 'STEP'+i,
 					draggable: false
 				});
 
@@ -94,6 +170,7 @@ html
 				x: 5,
 				y: 45,
 				draggable: true,
+				id: 't1',
 				name: 'Task1'
 			});
 
@@ -149,7 +226,7 @@ html
 					x: p_x + 5,
 					y: p_y
 				});
-				writeMessage("  DRAGEND " + e.target.name() + ":" + t1.getX() + "/" + t1.getY()  );
+				writeMessage("  DRAGEND " +e.target.id()+"/"+ e.target.name() + ":" + t1.getX() + "/" + t1.getY()  );
 				});
 
 			layer.add(t1);

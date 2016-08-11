@@ -35,6 +35,14 @@ app.get('/tkonva3', function(req, res) {
 app.get('/tc1', function(req, res) {
    res.render('tc1');
 	});
+
+app.get('/tc2', function(req, res) {
+   res.render('tc2');
+	});
+
+app.get('/modal1', function(req, res) {
+   res.render('modal1');
+	});
  
 // Create server and listen on port 3030.
 http.createServer(app).listen(3030, function() {

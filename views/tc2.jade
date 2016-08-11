@@ -1,0 +1,252 @@
+extends ../node_modules/jade-bootstrap/_bootstrap2
+block styles 
+	link(rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")
+
+block scripts
+	//script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js")
+	script(src='https://cdn.rawgit.com/konvajs/konva/1.0.0/konva.min.js')
+	script(src="https://code.jquery.com/jquery-1.12.4.js")
+	script(src="https://code.jquery.com/ui/1.12.0/jquery-ui.js")
+
+block body
+	#dialog(title="Dialog Title")
+		p I am a Dialog Box with Form
+		form
+			fieldset
+				label(for="name") Name
+				input(type="text" name="name" id="name" value="Jane Smith" class="text ui-widget-content ui-corner-all")
+				label(for="email") Email
+				input(type="text" name="email" id="email" value="jane@smith.com" class="text ui-widget-content ui-corner-all")
+				label(for="password") Password
+				input(type="password" name="password" id="password" value="xxxxxxx" class="text ui-widget-content ui-corner-all")
+			button(type="submit" ) OK
+
+	// 
+	.container
+		#entete
+			p 
+				Center 
+					h2 KANBAN BOARD
+					button(type="submit" onclick="AddTaskToBoard();" ) NEW
+					button#opener open the dialog
+
+	//Test KONVA CHRIS
+	#container
+	script.
+		$( "#dialog" ).dialog({ autoOpen: false });
+		$( "#opener" ).click(function() {
+		  $( "#dialog" ).dialog( "open" );
+		});
+
+		// Fonctions
+		function writeMessage(message) {
+			text.setText(message);
+			layer.draw();
+		}
+
+		function AddTaskToBoard(){
+					layer.add(newTask());
+					layer.draw();
+				}
+
+				// Creation d'une tache
+				function newTask() {
+					// Task
+					var t1 = new Konva.Group({
+						x: 5,
+						y: 45,
+						draggable: true,
+						id: 't1',
+						name: 'Task1'
+					});
+
+					t1.add( new Konva.Rect({
+						x: 0,
+						y: 0,
+						width: step_larg-10,
+						height: 100,
+						fill: 'yellow',
+						stroke: 'black',
+						cornerRadius: 10
+					}) );
+
+					t1.add( new Konva.Text({
+						x: 5,
+						y: 5,
+						text: 'Task 1',
+						fontSize: 20,
+						fontFamily: 'Calibri',
+						fill: 'black'
+					}) );
+
+					t1.on('dragmove', function() {
+						document.body.style.cursor = 'pointer';
+						});
+
+					t1.on('mouseout', function() {
+						document.body.style.cursor = 'default';
+						});
+
+					t1.on('click', function() {
+						writeMessage("  CLICK  ");
+					});
+
+
+					t1.on('dragstart', function() {
+						this.moveToTop();
+						writeMessage("  DRAGSTART  ");
+						});
+
+					t1.on('dragend', function(e) {
+						p_x = t1.getX() + (step_larg / 2);
+						p_y = t1.getY();
+
+						p_x = Math.floor(p_x/300) * 300;
+
+						if ( p_x < 0 )
+						{
+							p_x = 0;
+						}
+
+						t1.position({
+							x: p_x + 5,
+							y: p_y
+						});
+						writeMessage("  DRAGEND " +e.target.id()+"/"+ e.target.name() + ":" + t1.getX() + "/" + t1.getY()  );
+						});
+
+					return t1;
+				}
+
+				// MAIN CODE
+
+				var width = window.innerWidth;
+				var height = window.innerHeight;
+				
+				var stage = new Konva.Stage({
+				  container: 'container',
+				  width: width,
+				  height: height
+				});
+
+				var layer = new Konva.Layer();
+
+				var step_color = [ "#777777", "#888888", "#999999", "#AAAAAA", "#BBBBBB", "#CCCCCC" ]
+				var step_title = [ "Nouveau", "A Planifier", "En Cours", "En Attente", "Terminé", "A Valider" ];
+
+				var Step1;
+				var step_larg = 300;
+
+				for ( i = 0 ;  i < 6 ; i++ )
+				{
+
+					Step1 = new Konva.Group({
+						x: i * step_larg ,
+						y: 0,
+						id: 'STEP'+i,
+						draggable: false
+					});
+
+					Step1.add( new Konva.Rect({
+						x: 0,
+						y: 0,
+						width: step_larg,
+						height: 600,
+						fill: step_color[i],
+						stroke: 'black',
+						cornerRadius: 10
+					}) );
+
+					Step1.add( new Konva.Text({
+						x: 5,
+						y: 5,
+						text: step_title[i],
+						fontSize: 30,
+						fontFamily: 'Calibri',
+						fill: '#555555'
+					}) );
+
+					layer.add(Step1);
+				}
+
+				// Message 
+				var text = new Konva.Text({
+					x: 10,
+					y: 610,
+					fontFamily: 'Calibri',
+					fontSize: 24,
+					text: '< VIDE >',
+					fill: 'black'
+				});
+
+				layer.add(text);
+
+				// Task
+				var t1 = new Konva.Group({
+					x: 5,
+					y: 45,
+					draggable: true,
+					id: 't1',
+					name: 'Task1'
+				});
+
+				t1.add( new Konva.Rect({
+					x: 0,
+					y: 0,
+					width: step_larg-10,
+					height: 100,
+					fill: 'yellow',
+					stroke: 'black',
+					cornerRadius: 10
+				}) );
+
+				t1.add( new Konva.Text({
+					x: 5,
+					y: 5,
+					text: 'Task 1',
+					fontSize: 20,
+					fontFamily: 'Calibri',
+					fill: 'black'
+				}) );
+
+				t1.on('dragmove', function() {
+					document.body.style.cursor = 'pointer';
+					});
+
+				t1.on('mouseout', function() {
+					document.body.style.cursor = 'default';
+					});
+
+				t1.on('click', function() {
+					writeMessage("  CLICK  ");
+				});
+
+
+				t1.on('dragstart', function() {
+					this.moveToTop();
+					writeMessage("  DRAGSTART  ");
+					});
+
+				t1.on('dragend', function(e) {
+					p_x = t1.getX() + (step_larg / 2);
+					p_y = t1.getY();
+
+					p_x = Math.floor(p_x/300) * 300;
+
+					if ( p_x < 0 )
+					{
+						p_x = 0;
+					}
+
+					t1.position({
+						x: p_x + 5,
+						y: p_y
+					});
+					writeMessage("  DRAGEND " +e.target.id()+"/"+ e.target.name() + ":" + t1.getX() + "/" + t1.getY()  );
+					});
+
+				layer.add(t1);
+
+				stage.add(layer);
+
+ 
