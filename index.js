@@ -40,6 +40,10 @@ app.get('/tc2', function(req, res) {
    res.render('tc2');
 	});
 
+app.get('/tc3', function(req, res) {
+   res.render('tc3');
+	});
+
 app.get('/modal1', function(req, res) {
    res.render('modal1');
 	});

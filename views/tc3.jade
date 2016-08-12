@@ -1,0 +1,427 @@
+extends ../node_modules/jade-bootstrap/_bootstrap2
+block styles 
+	link(rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")
+	style.
+		label, input { display:block; }
+		input.text { margin-bottom:12px; width:95%; padding: .4em; }
+		//label { }
+		fieldset { padding:0; border:0; margin-top:25px; }
+		// Pour ne pas avoir de titre parasite sur la croix qui ferme la boite de dialogue
+		.no-close .ui-dialog-titlebar-close { display: none; }
+		// Pour un peu d'espace avec les boutons
+		hr#hr_sep { margin-top: 35px; }
+
+block scripts
+	// Jquery Origine
+	//script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js")
+	script(src='https://cdn.rawgit.com/konvajs/konva/1.0.0/konva.min.js')
+	script(src="https://code.jquery.com/jquery-1.12.4.js")
+	script(src="https://code.jquery.com/ui/1.12.0/jquery-ui.js")
+
+block body
+	#dialog(title="Dialog Title")
+		p
+			h2 
+				u Nouvelle Tache
+			fieldset#form_nt
+				label(for="Tiers ") Tiers:
+				input(type="text" name="Tiers" id="Tiers" value="SRA" class="text ui-widget-content ui-corner-all")
+				label(for="Description ") Description:
+				input(type="text" name="Description" id="Description" value="Nouvelle Tache" class="text ui-widget-content ui-corner-all")
+				hr#hr_sep
+				button( onclick="DialogNewTask_Commit();" ) Add Task
+				button( onclick="DialogNewTask_Cancel();" ) Cancel
+
+	// le .container pour les objets jade-bootstrap 
+	.container
+		#entete
+			p 
+				Center 
+					h2 KANBAN BOARD
+					button(type="submit" onclick="AddTaskToBoard();" ) NEW
+					button#opener open the dialog
+
+	//Test KONVA CHRIS le #container pour les objets konvas
+	#container
+	script.
+		var task_zones = [ 'Tiers', 'Description' ];
+		$( "#dialog" ).dialog({ 
+			autoOpen: false,
+			height: 400,
+			width: 350,
+			modal: true,
+			closeText: ""
+			});
+		$( "#opener" ).click(function() {
+		  $( "#dialog" ).dialog( "open" );
+		});
+
+		// Fonctions
+		function writeMessage(message) {
+			text.setText(message);
+			layer.draw();
+		}
+
+		// Boite de dialoge NewTask => On cree une nouvelle tache
+		function DialogNewTask_Commit(){
+		  $( "#dialog" ).dialog( "close" );
+		  var data = {};
+		  var z;
+		  for (z in task_zones) {
+		  	data[task_zones[z]] = document.getElementById(task_zones[z]).value;
+		  }
+		  AddTaskToBoard( 'T0001', task_zones['Tiers'], task_zones['Description']);
+		}
+
+		// Boite de dialoge NewTask => CANCEL
+		function DialogNewTask_Cancel(){
+		  $( "#dialog" ).dialog( "close" );
+		}
+
+		// Fonction Ajout de task
+		function AddTaskToBoard( nom, tiers, desc ){
+					layer.add(newTask( nom, tiers, desc ));
+					layer.draw();
+				}
+
+		// Creation d'une tache
+		function newTask( nom, tiers, desc) {
+			// Dessin
+			var G = new Konva.Group({
+				x: 5,
+				y: 45,
+				draggable: true,
+				id: nom,
+				name: nom,
+				tiers: tiers,
+				desc: desc
+			});
+
+			var task_larg = step_larg-10;
+			var task_long = 200
+
+			body = new Konva.Rect({ 
+					x:0 , 
+					y:0 , 
+					width: task_larg,
+					height: task_long,
+					name: 'body',
+					fill: '#F5F5DC',
+					stroke: 'black',
+					strokeWidth: 2,
+					cornerRadius: 10
+					});
+			G.add(body);
+
+
+			head = new Konva.Rect({ 
+				   x: 2 , 
+				   y: 10 , 
+					width: task_larg-4,
+					height: 50,
+					name: 'head',
+					fill: 'yellow',
+					//stroke: 'black',
+					//strokeWidth: 2
+					});
+			G.add(head);
+
+			th_line = new Konva.Line({
+						points: [ 0, 60, task_larg, 60 ],
+						stroke: 'black',
+						strokeWidth: 2
+					 });
+			G.add(th_line);
+			
+			t_head = new Konva.Text({
+						x: 10,
+						y: 20,
+						width: task_larg-10,
+						heigth: 50,
+						text: nom + ':' + tiers,
+						fontSize: 15,
+						fontFamily: 'Calibri',
+						fill: 'black'
+					});
+			G.add(t_head);
+
+			t_body = new Konva.Text({
+						x: 10,
+						y: 65,
+						width: task_larg-10,
+						heigth: 100,
+						text: desc,
+						fontSize: 15,
+						fontFamily: 'Calibri',
+						fill: 'black'
+					});
+			G.add(t_body);
+
+			tf_line = new Konva.Line({
+						points: [ 0, task_long-62, task_larg, task_long-62 ],
+						stroke: 'black',
+						strokeWidth: 2
+					 });
+			G.add(tf_line);
+
+			foot = new Konva.Rect({ 
+						x:2, 
+						y:task_long-62 , 
+						width: task_larg-4,
+						height: 50,
+						name: 'body',
+						fill: 'yellow',
+						//stroke: 'black',
+						//strokeWidth: 2
+					});
+			G.add(foot);
+
+			G.on('dragmove', function() {
+				document.body.style.cursor = 'pointer';
+				});
+
+			G.on('mouseout', function() {
+				document.body.style.cursor = 'default';
+				});
+
+			G.on('click', function() {
+				writeMessage("  CLICK  ");
+			});
+
+
+			G.on('dragstart', function() {
+				this.moveToTop();
+				writeMessage("  DRAGSTART  ");
+				});
+
+			G.on('dragend', function(e) {
+					p_x = G.getX() + (step_larg / 2);
+					p_y = G.getY();
+
+					p_x = Math.floor(p_x/300) * 300;
+
+					if ( p_x < 0 )
+					{
+						p_x = 0;
+					}
+
+					G.position({
+						x: p_x + 5,
+						y: p_y
+					});
+					writeMessage("  DRAGEND " +e.target.id()+"/"+ e.target.name() + ":" + G.getX() + "/" + G.getY()  );
+				});
+
+			return G;
+		}
+
+		function newTask_old(nom, tiers, desc) {
+			// Task
+			var task = new Konva.Group({
+				x: 5,
+				y: 45,
+				draggable: true,
+				id: nom,
+				name: nom,
+				tiers: tiers,
+				desc: desc
+			});
+
+			task.add( new Konva.Rect({
+				x: 0,
+				y: 0,
+				width: step_larg-10,
+				height: 100,
+				fill: 'yellow',
+				stroke: 'black',
+				cornerRadius: 10
+			}) );
+
+			task.add( new Konva.Text({
+				x: 5,
+				y: 5,
+				width: step_larg-10,
+				height: 100,
+				text: nom+' / '+tiers + '\n' + desc,
+				fontSize: 20,
+				fontFamily: 'Calibri',
+				fill: 'black'
+			}) );
+
+			task.on('dragmove', function() {
+				document.body.style.cursor = 'pointer';
+				});
+
+			task.on('mouseout', function() {
+				document.body.style.cursor = 'default';
+				});
+
+			task.on('click', function() {
+				writeMessage("  CLICK  ");
+			});
+
+
+			task.on('dragstart', function() {
+				this.moveToTop();
+				writeMessage("  DRAGSTART  ");
+				});
+
+			task.on('dragend', function(e) {
+				p_x = task.getX() + (step_larg / 2);
+				p_y = task.getY();
+
+				p_x = Math.floor(p_x/300) * 300;
+
+				if ( p_x < 0 )
+				{
+					p_x = 0;
+				}
+
+				task.position({
+					x: p_x + 5,
+					y: p_y
+				});
+				writeMessage("  DRAGEND " +e.target.id()+"/"+ e.target.name() + ":" + task.getX() + "/" + task.getY()  );
+				});
+
+			return task;
+		}
+
+		// MAIN CODE
+
+		var width = window.innerWidth;
+		var height = window.innerHeight;
+		
+		var stage = new Konva.Stage({
+		  container: 'container',
+		  width: width,
+		  height: height
+		});
+
+		var layer = new Konva.Layer();
+
+		var step_color = [ "#777777", "#888888", "#999999", "#AAAAAA", "#BBBBBB", "#CCCCCC" ]
+		var step_title = [ "Nouveau", "A Planifier", "En Cours", "En Attente", "Terminé", "A Valider" ];
+
+		var Step1;
+		var step_larg = 300;
+
+		for ( i = 0 ;  i < 6 ; i++ )
+		{
+
+			Step1 = new Konva.Group({
+				x: i * step_larg ,
+				y: 0,
+				id: 'STEP'+i,
+				draggable: false
+			});
+
+			Step1.add( new Konva.Rect({
+				x: 0,
+				y: 0,
+				width: step_larg,
+				height: 600,
+				fill: step_color[i],
+				stroke: 'black',
+				cornerRadius: 10
+			}) );
+
+			Step1.add( new Konva.Text({
+				x: 5,
+				y: 5,
+				text: step_title[i],
+				fontSize: 30,
+				fontFamily: 'Calibri',
+				fill: '#555555'
+			}) );
+
+			layer.add(Step1);
+		}
+
+		// Message 
+		var text = new Konva.Text({
+			x: 10,
+			y: 610,
+			fontFamily: 'Calibri',
+			fontSize: 24,
+			text: '< VIDE >',
+			fill: 'black'
+		});
+
+		layer.add(text);
+		// Pour Commencer
+		layer.add(newTask('T0001', 'TIERS', 'Lorem ipsum dolor itmet'));
+		stage.add(layer);
+
+// ======================================
+// OBSOLETE
+// // ======================================
+// Task
+//		var t1 = new Konva.Group({
+//			x: 5,
+//			y: 45,
+//			draggable: true,
+//			id: 't1',
+//			name: 'Task1'
+//		});
+//
+//		t1.add( new Konva.Rect({
+//			x: 0,
+//			y: 0,
+//			width: step_larg-10,
+//			height: 100,
+//			fill: 'yellow',
+//			stroke: 'black',
+//			cornerRadius: 10
+//		}) );
+//
+//		t1.add( new Konva.Text({
+//			x: 5,
+//			y: 5,
+//			text: 'Task 1',
+//			fontSize: 20,
+//			fontFamily: 'Calibri',
+//			fill: 'black'
+//		}) );
+//
+//		t1.on('dragmove', function() {
+//			document.body.style.cursor = 'pointer';
+//			});
+//
+//		t1.on('mouseout', function() {
+//			document.body.style.cursor = 'default';
+//			});
+//
+//		t1.on('click', function() {
+//			writeMessage("  CLICK  ");
+//		});
+//
+//
+//		t1.on('dragstart', function() {
+//			this.moveToTop();
+//			writeMessage("  DRAGSTART  ");
+//			});
+//
+//		t1.on('dragend', function(e) {
+//			p_x = t1.getX() + (step_larg / 2);
+//			p_y = t1.getY();
+//
+//			p_x = Math.floor(p_x/300) * 300;
+//
+//			if ( p_x < 0 )
+//			{
+//				p_x = 0;
+//			}
+//
+//			t1.position({
+//				x: p_x + 5,
+//				y: p_y
+//			});
+//			writeMessage("  DRAGEND " +e.target.id()+"/"+ e.target.name() + ":" + t1.getX() + "/" + t1.getY()  );
+//			});
+//
+//		layer.add(t1);
+//		
+//
+//
+//
