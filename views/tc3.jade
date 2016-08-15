@@ -70,7 +70,7 @@ block body
 		  for (z in task_zones) {
 		  	data[task_zones[z]] = document.getElementById(task_zones[z]).value;
 		  }
-		  AddTaskToBoard( 'T0001', task_zones['Tiers'], task_zones['Description']);
+		  AddTaskToBoard( 'T0001', data['Tiers'], data['Description']);
 		}
 
 		// Boite de dialoge NewTask => CANCEL
@@ -349,8 +349,8 @@ block body
 		});
 
 		layer.add(text);
-		// Pour Commencer
-		layer.add(newTask('T0001', 'TIERS', 'Lorem ipsum dolor itmet'));
+		// Pour Commencer et pour les tests
+		// layer.add(newTask('T0001', 'TIERS', 'Lorem ipsum dolor itmet'));
 		stage.add(layer);
 
 // ======================================
