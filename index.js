@@ -3,13 +3,17 @@ var http = require('http');
 var path = require('path');
 // Load express module.
 var express = require('express');
-
+var morgan = require('morgan')
 var bodyParser  = require('body-parser');
 
  
 // Initialize app object.
 var app = new express();
 
+// Log
+app.use(morgan(':date :method :url :http-version :response-time :status :remote-addr :referrer'));
+
+// Decode des POST json et HTML
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
