@@ -9,7 +9,8 @@
 	"jade": "*",
 	"jade-bootstrap": "*",
 	"body-parser":"*",
-	"morgan":"*"
+	"morgan":"*",
+	"sqlite3": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,0 +1,46 @@
+extends ../node_modules/jade-bootstrap/_bootstrap2
+block styles 
+	link(rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")
+	link(rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css")
+	link(rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css")
+
+block scripts
+	// Jquery Origine
+	//script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js")
+	script(src='https://cdn.rawgit.com/konvajs/konva/1.0.0/konva.min.js')
+	script(src="https://code.jquery.com/jquery-1.12.4.js")
+	script(src="https://code.jquery.com/ui/1.12.0/jquery-ui.js")
+	script(src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js")
+
+block body
+	// le .container pour les objets jade-bootstrap 
+	.container
+		#entete
+			p 
+				Center 
+					h2 TEST DATATABLE SQLITE3
+
+	//table#example( class="display" cellspacing="0" width="100%" )
+	table#example( class="table table-striped table-bordered" cellspacing="0" width="100%" )
+		thead
+			tr
+				th Name
+				th Position
+				th Office
+				th Extn
+				th Start_Date
+				th Salary
+		//tfoot
+			//tr
+				//th Name
+				//th Position
+				//th Office
+				//th Extn.
+				//th Start_Date
+				//th Salary
+	script.
+		$(document).ready(function() {
+			$('#example').DataTable( {
+				"ajax": "/tdp2/all_salaries",
+				} );
+		} );

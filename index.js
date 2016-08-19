@@ -6,6 +6,9 @@ var express = require('express');
 var morgan = require('morgan')
 var bodyParser  = require('body-parser');
 
+var sqlite3 = require('sqlite3').verbose();
+var db = new sqlite3.Database('db/data.dbf');
+
  
 // Initialize app object.
 var app = new express();
@@ -65,6 +68,23 @@ app.get('/tdp1', function(req, res) {
 	});
 app.get('/tdp1/arrays.json', function(req, res) {
 	res.sendFile(path.join(__dirname, 'public', 'arrays.json'));
+	});
+
+//Avec DATAABLES + SQLITE3
+app.get('/tdp2', function(req, res) {
+   res.render('tdp2');
+	});
+
+app.get('/tdp2/all_salaries', function(req, res) {
+		db.all("SELECT * FROM salaries", function (err, rows) {
+			r = {};
+			//console.log(JSON.stringify(rows[0]));
+			arr_rows = rows.map(function (item) { return [item.name, item.position, item.office, item.extn, item.start_date, item.salary ]; });
+			//arr_rows = rows.map(function (item) { return Object.values(item) });
+			r.data = arr_rows ;
+			s = JSON.stringify(r);
+			res.send( s );
+		});
 	});
 
 // TEST AVEC POST
