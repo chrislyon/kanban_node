@@ -79,8 +79,34 @@ app.get('/tdp2/all_salaries', function(req, res) {
 		db.all("SELECT * FROM salaries", function (err, rows) {
 			r = {};
 			//console.log(JSON.stringify(rows[0]));
-			arr_rows = rows.map(function (item) { return [item.name, item.position, item.office, item.extn, item.start_date, item.salary ]; });
-			//arr_rows = rows.map(function (item) { return Object.values(item) });
+			//arr_rows = rows.map(function (item) { return [item.name, item.position, item.office, item.extn, item.start_date, item.salary ]; });
+			//arr_rows = rows.map(function (item) { return Object.values(item) }); //Marche pas :(
+			// Exemple de table
+			// 	table#example( class="table table-striped table-bordered" cellspacing="0" width="100%" )
+			// 			thead
+			// 				tr
+			// 					th Name
+			// 					th Position
+			// 					th Office
+			// 					th Extn
+			// 					th Start_Date
+			// 					th Salary
+			// 	Schema SQLITE
+			// 	CREATE TABLE salaries ( name varchar(30), position varchar(30), office varchar(30), extn varchar(5), start_date date, salary number(10) );
+			//
+			//	script.
+			//			$(document).ready(function() {
+			//						$('#example').DataTable( {
+			//										"ajax": "/tdp2/all_salaries", <= URL
+			//														} );
+			//																} );
+			//
+			//
+			// C'est magique il suffit d'avoir la <table> declarée dans le meme ordre et cela fonctionne
+			//
+			arr_rows = rows.map(function (item) { return Object.keys(item).map(function(key){return item[key]}) });
+			console.log( arr_rows );
+			debugger;
 			r.data = arr_rows ;
 			s = JSON.stringify(r);
 			res.send( s );
