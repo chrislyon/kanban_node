@@ -10,7 +10,8 @@
 	"jade-bootstrap": "*",
 	"body-parser":"*",
 	"morgan":"*",
-	"sqlite3": "*"
+	"sqlite3": "*",
+	"heredoc": "*"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
